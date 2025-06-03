@@ -16,16 +16,12 @@ import net.serenitybdd.screenplay.questions.Text;
 import net.serenitybdd.screenplay.GivenWhenThen.*;
 import net.thucydides.core.annotations.Managed;
 import org.openqa.selenium.WebDriver;
-import static org.hamcrest.Matchers.equalTo;
-
-
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
-import static com.google.common.base.Predicates.equalTo;
+
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.*;
 import static org.hamcrest.Matchers.containsString;
@@ -63,10 +59,12 @@ public class DatePickerStepDefinitions {
     @Then("the text field should contain the date with day {int}")
 
     public void theTextFieldShouldContainTheDateWithDay(int expectedDay) {
-        user.should();
-        seeThat("el campo de texto contiene el día correcto",
-                Text.of(DatePickerPageUI.DATE_INPUT_FIELD).asString(),
-                containsString(String.format("%02d", expectedDay))  // compara si contiene "15"
+
+        theActorInTheSpotlight().should(
+                seeThat("el campo de texto contiene el día correcto",
+                        Text.of(DatePickerPageUI.DATE_INPUT_FIELD).asString(),
+                        containsString(String.format("%02d", expectedDay))
+                )
         );
     }
 
@@ -94,8 +92,8 @@ public class DatePickerStepDefinitions {
         }
 
         //theActorInTheSpotlight().should(
-               // seeThat(SelectedDateValue.is(), equalTo(fechaEsperadaFormateada))
-       // );
+          //      seeThat(SelectedDateValue.is(), equalTo(fechaEsperadaFormateada))
+        //);
     }
 
     @And("the user navigates to the next month")

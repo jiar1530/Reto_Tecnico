@@ -1,6 +1,5 @@
 # language: en
 Feature: Date selection on calendar
-  //@DatePicker
 
   Background:
     Given the user opens the datepicker page

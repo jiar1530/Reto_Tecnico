@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
 
         features = "src/test/resources/features/",
-        tags = " @Scenario1",
+        tags = " @Scenario2",
         glue = "com.sqa.retotecnico.stepDefinitions",
         snippets = CucumberOptions.SnippetType.CAMELCASE
 )
