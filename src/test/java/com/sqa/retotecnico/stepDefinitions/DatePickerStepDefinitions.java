@@ -60,12 +60,11 @@ public class DatePickerStepDefinitions {
 
     public void theTextFieldShouldContainTheDateWithDay(int expectedDay) {
 
-        theActorInTheSpotlight().should(
+        user.should();
                 seeThat("el campo de texto contiene el día correcto",
                         Text.of(DatePickerPageUI.DATE_INPUT_FIELD).asString(),
                         containsString(String.format("%02d", expectedDay))
-                )
-        );
+                );
     }
 
     @Then("the selected date should be \"MM+1/10/YYYY\" in the input field")
