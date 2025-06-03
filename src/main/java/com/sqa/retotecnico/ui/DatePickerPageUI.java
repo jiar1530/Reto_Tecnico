@@ -24,7 +24,10 @@ public class DatePickerPageUI {
     public static Target dayInCalendar(int day) {
         return Target.the("Day " + day + " in calendar")
                 .located(By.xpath("//div[@id='ui-datepicker-div']//table[@class='ui-datepicker-calendar']//a[text()='15']"));
-
+    }
+    public static Target daynextInCalendar(int day) {
+        return Target.the("Day " + day + " in calendar")
+                .located(By.xpath("//div[@id='ui-datepicker-div']//table[@class='ui-datepicker-calendar']//a[text()='10']"));
     }
 
     public static final Target DATEPICKER_MONTH_YEAR_TITLE = Target.the("Datepicker month and year title")

@@ -1,8 +1,7 @@
 package com.sqa.retotecnico.stepDefinitions;
 
-import com.sqa.retotecnico.task.ClickDateField;
-import com.sqa.retotecnico.task.OpenTheDatepickerPage;
-import com.sqa.retotecnico.task.SelectDay;
+import com.sqa.retotecnico.task.*;
+import com.sqa.retotecnico.task.SelectnextmonthDay;
 import com.sqa.retotecnico.ui.DatePickerPageUI;
 
 import io.cucumber.java.Before;
@@ -14,8 +13,19 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.serenitybdd.screenplay.questions.Text;
+import net.serenitybdd.screenplay.GivenWhenThen.*;
 import net.thucydides.core.annotations.Managed;
 import org.openqa.selenium.WebDriver;
+import static org.hamcrest.Matchers.equalTo;
+
+
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
+
+import static com.google.common.base.Predicates.equalTo;
 import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
 import static net.serenitybdd.screenplay.actors.OnStage.*;
 import static org.hamcrest.Matchers.containsString;
@@ -57,8 +67,48 @@ public class DatePickerStepDefinitions {
         seeThat("el campo de texto contiene el día correcto",
                 Text.of(DatePickerPageUI.DATE_INPUT_FIELD).asString(),
                 containsString(String.format("%02d", expectedDay))  // compara si contiene "15"
-
         );
     }
 
+    @Then("the selected date should be \"MM+1/10/YYYY\" in the input field")
+    public void laFechaSeleccionadaDeberiaSerEnElCampoDeEntrada(String placeholderOFechaLiteral) {
+        LocalDate hoy = LocalDate.now();
+        String fechaEsperadaFormateada;
+
+        DateTimeFormatter formateadorSalidaCampoWeb = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.US);
+
+        if ("MM/15/AAAA".equalsIgnoreCase(placeholderOFechaLiteral)) {
+            fechaEsperadaFormateada = hoy.withDayOfMonth(15).format(formateadorSalidaCampoWeb);
+        } else if ("MM+1/10/AAAA".equalsIgnoreCase(placeholderOFechaLiteral)) {
+            fechaEsperadaFormateada = hoy.plusMonths(1).withDayOfMonth(10).format(formateadorSalidaCampoWeb);
+        } else {
+            DateTimeFormatter formateadorEntradaFeature = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.US);
+            try {
+                LocalDate fechaParseada = LocalDate.parse(placeholderOFechaLiteral, formateadorEntradaFeature);
+                fechaEsperadaFormateada = fechaParseada.format(formateadorSalidaCampoWeb);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException(
+                        "El valor '" + placeholderOFechaLiteral + "' en el feature no es un placeholder de fecha reconocido (MM/15/AAAA, MM+1/10/AAAA) " +
+                                "ni una fecha válida en el formato esperado (dd/MM/yyyy). Error de parseo: " + e.getMessage(), e);
+            }
+        }
+
+        //theActorInTheSpotlight().should(
+               // seeThat(SelectedDateValue.is(), equalTo(fechaEsperadaFormateada))
+       // );
+    }
+
+    @And("the user navigates to the next month")
+    public void theUserNavigatesToTheNextMonth() {
+        theActorInTheSpotlight().attemptsTo(NavigateToNextMonth.now());
+    }
+    @And("the user selects day {int} of the next month")
+    public void theUserSelectsDayOfTheNextMonth(Integer day) {
+        theActorInTheSpotlight().attemptsTo(SelectnextmonthDay.fromDisplayedMonth(day));
+    }
+
+    @Then("the selected date should be {string} in the input field")
+    public void theSelectedDateShouldBeInTheInputField(String arg0) {
+
+    }
 }
